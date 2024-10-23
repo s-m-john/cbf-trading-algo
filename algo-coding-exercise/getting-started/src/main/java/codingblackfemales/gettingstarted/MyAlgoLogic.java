@@ -27,11 +27,16 @@ public class MyAlgoLogic implements AlgoLogic {
          Accessing Market Data:
 
          Retrieves the best bid price, best ask price, and current price from the SimpleAlgoState object.
+
          Buy and Sell Logic:
 
-         Buy Order: It places a buy order if the current price is less than 98% of the best ask price.
-         Sell Order: It places a sell order if the current price is more than 102% of the best bid price.
-         Action Returns: The algorithm returns specific actions (buy or sell) based on the conditions met.
+         Buy Order: It places a child buy order if the current price is less than 98% of
+         the best ask price and the maximum number of child orders has not been reached.
+
+         Sell Order: It places a child sell order if the current price is more than 102% of
+         the best bid price and the maximum number of child orders has not been reached.
+
+         Action Returns: The algorithm returns specific actions (buy or sell child order) based on the conditions met.
          *
          ********/
 
