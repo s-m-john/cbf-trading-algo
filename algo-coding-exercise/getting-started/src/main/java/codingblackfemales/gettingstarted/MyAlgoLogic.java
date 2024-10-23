@@ -40,26 +40,63 @@ public class MyAlgoLogic implements AlgoLogic {
         double bestBidPrice = state.getBestBidPrice();
         double bestAskPrice = state.getBestAskPrice();
         double currentPrice = state.getCurrentPrice();
-        int quantity = 100;
+        int totalQuantity = 100;
 
         // Define threshold for buying and selling
         double buyThreshold = bestAskPrice * 0.98;
         double sellThreshold = bestBidPrice * 1.02;
 
-        // Implement buy logic
+
+        // Define child order parameters
+        int childOrderQuantity = 20;
+        int maxChildOrders = totalQuantity / childOrderQuantity;
+
+        // Counthte current number of child orders
+        int currentChildOrders = state.getChildOrders().size;
+
+        // Check to see if a child order can be created
         if (currentPrice < buyThreshold) {
-            logger.info("[MYALGO] Placing a buy order at price: " + currentPrice);
-            state.addOrder(new Order(currentPrice, quantity));
-            return new Action("BUY", currentPrice, quantity);
+            logger.info("[MYALGO] Current price is below but threshold: " currentPrice);
+
+            // Place a buy child order if the maximum hasn't been reached
+            if (currentChildOrders < maxChildOrders) {
+                logger.info("[MYALGO] Creating child buy order at price: " + currentPrice);
+                state.addOrder(new Order(currentPrice, childOrderQuantity));
+                return new Action("BUY_CHILD_ORDER", currentPrice, childOrderQuantity);
+            } else{
+                logger.info("[MYALGO] Maximum buy child orders reached.");
+            }
         }
 
-        // Implement se;; ;pgic
-        if (currentPrice < sellThreshold) {
-            logger.info("[MYALGO] Placing a sell order at price: " + currentPrice);
-            state.addOrder(new Order(currentPrice, -quantity));
-            return new Action("SELL", currentPrice, -quantity);
+        // Check if a child sell order can be created
+        if (currentPrice > sellThreshold) {
+            logger.info("[MYALGO] Current price is above sell threshold: " + currentPrice);
+
+            // Place a sell child order if the maximum hasn't been reached
+            if (currentChildOrders < maxChildOrders) {
+                logger.info("[MYALGO] Creating child sell order at price: " + currentPrice);
+                state.addOrder(new Order(currentPrice, -childOrderQuantity));
+                return new Action("SELL_CHILD_ORDER", currentPrice, -childOrderQuantity);
+            } else {
+                logger.info("[MYALGO] Maximum sell child orders reached.")
+            }
         }
 
         return NoAction.NoAction;
     }
 }
+
+
+//Logic before child order
+        // Implement buy logic
+        /*if (currentPrice < buyThreshold) {
+            logger.info("[MYALGO] Placing a buy order at price: " + currentPrice);
+            state.addOrder(new Order(currentPrice, quantity));
+            return new Action("BUY", currentPrice, quantity);
+        }
+
+        // Implement se;; ;pgicif (currentPrice < sellThreshold) {
+            /*logger.info("[MYALGO] Placing a sell order at price: " + currentPrice);
+            state.addOrder(new Order(currentPrice, -quantity));
+            return new Action("SELL", currentPrice, -quantity);
+        }/
